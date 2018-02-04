@@ -60,6 +60,11 @@ class ConfigurableGitNotebookProvider(val gitProvider: GitProvider, commitMsgs: 
     } yield notebook
   }
 
+  override def deletePath(path: Path)(implicit ev: ExecutionContext): Future[Unit] = {
+    // delete(path).map(_ => ())
+    throw new NotImplementedError()
+  }
+
   // check exists => fs.delete => git.delete
   override def delete(path: Path)(implicit ev: ExecutionContext): Future[Notebook] = {
     val relativePathStr = relativize(path).toString

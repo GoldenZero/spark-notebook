@@ -617,7 +617,7 @@ object Application extends Controller {
     val path = URLDecoder.decode(p, UTF_8)
     Logger.info("DELETE → " + path)
     try {
-      notebookManager.deleteNotebook(path)
+      notebookManager.deletePath(path)
 
       Ok(Json.obj(
         "type" → "notebook",

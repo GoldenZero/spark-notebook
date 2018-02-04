@@ -22,7 +22,10 @@ trait NotebookProvider {
 
   def listingPolicy: File => Boolean = NotebookProvider.DefaultListingPolicy
 
+  @deprecated("No need to fetch notebook to delete it")
   def delete(path: Path)(implicit ev: ExecutionContext): Future[Notebook]
+
+  def deletePath(path: Path)(implicit ev: ExecutionContext): Future[Unit]
 
   def get(path: Path, version: Option[Version] = None)(implicit ev: ExecutionContext): Future[Notebook]
 
