@@ -613,7 +613,7 @@ object Application extends Controller {
     }
   }
 
-  def deleteNotebook(p: String) = EditorOnlyAction { request =>
+  def deletePath(p: String) = EditorOnlyAction { request =>
     val path = URLDecoder.decode(p, UTF_8)
     Logger.info("DELETE → " + path)
     try {
