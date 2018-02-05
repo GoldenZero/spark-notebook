@@ -148,7 +148,7 @@ class NotebookManager(val notebookConfig: NotebookConfig) {
 
   def deletePath(path: String): Future[Unit] = forbidInViewer {
     Logger.info(s"deleteNotebook at path $path")
-    provider.deletePath(absolutePath(path))
+    provider.deleteRecursively(absolutePath(path))
   }
 
   def rename(srcPath: String, destPath: String): (String, String) = forbidInViewer {
