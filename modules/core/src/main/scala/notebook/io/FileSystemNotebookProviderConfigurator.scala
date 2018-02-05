@@ -26,27 +26,22 @@ class FileSystemNotebookProviderConfigurator extends Configurable[NotebookProvid
   private[FileSystemNotebookProviderConfigurator] class FileSystemNotebookProvider(override val root: Path) extends NotebookProvider {
     override def isVersioningSupported: Boolean = false
 
-    override def deletePath(path: Path)(implicit ev: ExecutionContext): Future[Unit] = {
-      require(path.toFile.exists(), s"Path at [$path] should exist")
-
+    def recursivelyDelete(path: Path): Unit = {
       val file = path.toFile
+      require(file.exists(), s"Path at [$path] do not exist")
 
-      try {
-        if (file.isDirectory) {
-          val filesInDirectory = file.listFiles().toSeq
-          println(s"All files in directory $path will be deleted:\n $filesInDirectory")
-          filesInDirectory.map(_.toPath).foreach(deletePath)
-        }
-
-        val deleted = Files.deleteIfExists(path)
-        if (!deleted) {
-          Future.failed(new NotebookNotFoundException(path.toString))
-        } else {
-          Future.successful(())
-        }
-      } catch {
-        case ex: Throwable => Future.failed(ex)
+      if (file.isDirectory) {
+        val filesInDir = file.listFiles().toSeq
+        println(s"All files in directory $path will be deleted:\n $filesInDir")
+        filesInDir.map(_.toPath)
+          .foreach(recursivelyDelete)
       }
+
+      Files.delete(path)
+    }
+
+    override def deletePath(path: Path)(implicit ev: ExecutionContext): Future[Unit] = {
+      Future(recursivelyDelete(path))
     }
 
     @deprecated
